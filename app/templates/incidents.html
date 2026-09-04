@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Incidents — Windows Recycle Bin Analyzer{% endblock %}
+{% block content %}
+<h1>Incident Management</h1>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Title</th><th>Status</th><th>Priority</th><th>Updated</th><th>Update</th></tr>
+    {% for i in incidents %}
+    <tr>
+      <td>#{{ i.id }}</td>
+      <td class="mono">{{ i.title }}</td>
+      <td><span class="badge badge-{{ i.priority }}">{{ i.status }}</span></td>
+      <td>{{ i.priority }}</td>
+      <td>{{ i.updated_at }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('incidents.update', incident_id=i.id) }}">
+          <select name="status">
+            {% for st in ["open", "investigating", "resolved", "closed"] %}
+            <option value="{{ st }}" {% if i.status == st %}selected{% endif %}>{{ st }}</option>
+            {% endfor %}
+          </select>
+          <input type="text" name="notes" placeholder="Add note...">
+          <button type="submit">Update</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">No incidents yet. Escalate an alert to create one.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

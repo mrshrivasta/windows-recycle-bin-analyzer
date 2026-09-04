@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Settings — Windows Recycle Bin Analyzer{% endblock %}
+{% block content %}
+<h1>Settings</h1>
+<div class="card">
+  <form method="POST">
+    <label>Default scan path</label>
+    <input type="text" name="default_scan_path" value="{{ settings.default_scan_path }}">
+    <label>Max scan depth</label>
+    <input type="number" name="scan_depth_limit" value="{{ settings.scan_depth_limit }}" min="1" max="50">
+    <label>Excluded paths (comma-separated)</label>
+    <input type="text" name="exclude_paths" value="{{ settings.exclude_paths }}">
+    <label>Minimum severity for alerts</label>
+    <select name="alert_on_severity">
+      {% for sev in ["low", "medium", "high", "critical"] %}
+      <option value="{{ sev }}" {% if settings.alert_on_severity == sev %}selected{% endif %}>{{ sev }}</option>
+      {% endfor %}
+    </select>
+    <label><input type="checkbox" name="email_notifications" style="width:auto" {% if settings.email_notifications %}checked{% endif %}> Email notifications (not yet wired to an SMTP provider)</label>
+    <button type="submit">Save Settings</button>
+  </form>
+</div>
+{% endblock %}

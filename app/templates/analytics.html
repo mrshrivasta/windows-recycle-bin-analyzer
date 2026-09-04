@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Analytics — Windows Recycle Bin Analyzer{% endblock %}
+{% block content %}
+<h1>Analytics</h1>
+<p>Charts below render live from <code>/analytics/data</code> — aggregated directly from your real scan history in SQLite. No sample data.</p>
+
+<div class="chart-grid">
+  <div class="chart-box"><h3>Findings by Severity</h3><canvas id="severityPie"></canvas></div>
+  <div class="chart-box"><h3>Findings by Rule</h3><canvas id="ruleBar"></canvas></div>
+  <div class="chart-box"><h3>Scans Over Time</h3><canvas id="scansLine"></canvas></div>
+  <div class="chart-box"><h3>Incidents by Status</h3><canvas id="incidentRadar"></canvas></div>
+  <div class="chart-box"><h3>Severity Distribution (Doughnut)</h3><canvas id="severityDoughnut"></canvas></div>
+  <div class="chart-box"><h3>Findings by Rule (Polar Area)</h3><canvas id="rulePolar"></canvas></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+fetch("{{ url_for('analytics.data') }}")
+  .then(r => r.json())
+  .then(data => {
+    const palette = ["#4f8cff", "#ff4d6d", "#ff9f43", "#ffd43b", "#63e6be", "#a78bfa", "#f783ac"];
+
+    new Chart(document.getElementById("severityPie"), {
+      type: "pie",
+      data: { labels: Object.keys(data.severity_breakdown), datasets: [{ data: Object.values(data.severity_breakdown), backgroundColor: palette }] }
+    });
+
+    new Chart(document.getElementById("ruleBar"), {
+      type: "bar",
+      data: { labels: Object.keys(data.findings_by_rule), datasets: [{ label: "Findings", data: Object.values(data.findings_by_rule), backgroundColor: "#4f8cff" }] },
+      options: { scales: { x: { ticks: { color: "#93a0bb" } }, y: { ticks: { color: "#93a0bb" } } }, plugins: { legend: { labels: { color: "#e7ecf6" } } } }
+    });
+
+    new Chart(document.getElementById("scansLine"), {
+      type: "line",
+      data: { labels: Object.keys(data.scans_over_time), datasets: [{ label: "Scans", data: Object.values(data.scans_over_time), borderColor: "#63e6be", tension: 0.3 }] },
+      options: { scales: { x: { ticks: { color: "#93a0bb" } }, y: { ticks: { color: "#93a0bb" } } }, plugins: { legend: { labels: { color: "#e7ecf6" } } } }
+    });
+
+    new Chart(document.getElementById("incidentRadar"), {
+      type: "radar",
+      data: { labels: Object.keys(data.incident_status_counts), datasets: [{ label: "Incidents", data: Object.values(data.incident_status_counts), backgroundColor: "rgba(79,140,255,0.3)", borderColor: "#4f8cff" }] },
+      options: { plugins: { legend: { labels: { color: "#e7ecf6" } } } }
+    });
+
+    new Chart(document.getElementById("severityDoughnut"), {
+      type: "doughnut",
+      data: { labels: Object.keys(data.severity_breakdown), datasets: [{ data: Object.values(data.severity_breakdown), backgroundColor: palette }] }
+    });
+
+    new Chart(document.getElementById("rulePolar"), {
+      type: "polarArea",
+      data: { labels: Object.keys(data.findings_by_rule), datasets: [{ data: Object.values(data.findings_by_rule), backgroundColor: palette }] }
+    });
+  });
+</script>
+{% endblock %}

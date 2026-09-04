@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Alerts — Windows Recycle Bin Analyzer{% endblock %}
+{% block content %}
+<h1>Alerts</h1>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Severity</th><th>Message</th><th>Ack'd</th><th>Created</th><th>Actions</th></tr>
+    {% for a in alerts %}
+    <tr>
+      <td>#{{ a.id }}</td>
+      <td><span class="badge badge-{{ a.severity }}">{{ a.severity }}</span></td>
+      <td class="mono">{{ a.message }}</td>
+      <td>{{ "Yes" if a.acknowledged else "No" }}</td>
+      <td>{{ a.created_at }}</td>
+      <td>
+        {% if not a.acknowledged %}
+        <form method="POST" action="{{ url_for('alerts.acknowledge', alert_id=a.id) }}" style="display:inline">
+          <button type="submit">Acknowledge</button>
+        </form>
+        {% endif %}
+        <form method="POST" action="{{ url_for('alerts.escalate', alert_id=a.id) }}" style="display:inline">
+          <input type="hidden" name="priority" value="{{ a.severity }}">
+          <button type="submit" class="btn-danger">Escalate to Incident</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">No alerts yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

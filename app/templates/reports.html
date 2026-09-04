@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Reports — Windows Recycle Bin Analyzer{% endblock %}
+{% block content %}
+<h1>Reports</h1>
+<div class="card">
+  <h2>Export</h2>
+  <p><a class="btn" href="{{ url_for('reports.export_csv') }}">⬇ Export all findings (CSV)</a></p>
+</div>
+<div class="card">
+  <h2>Export by Scan</h2>
+  <table>
+    <tr><th>Scan ID</th><th>Target</th><th>Started</th><th>Export</th></tr>
+    {% for s in scans %}
+    <tr>
+      <td>#{{ s.id }}</td>
+      <td class="mono">{{ s.target_path }}</td>
+      <td>{{ s.started_at }}</td>
+      <td><a class="btn" href="{{ url_for('reports.export_csv', scan_id=s.id) }}">CSV</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No scans yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

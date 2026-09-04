@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Scan Logs — Windows Recycle Bin Analyzer{% endblock %}
+{% block content %}
+<h1>Scan Logs</h1>
+<p>Every scan run is logged here — this <em>is</em> the audit trail (no separate fabricated log data).</p>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Target</th><th>Status</th><th>Files</th><th>Dirs</th><th>Errors</th><th>Started</th><th>Finished</th></tr>
+    {% for s in scans %}
+    <tr>
+      <td><a href="{{ url_for('logs.detail', scan_id=s.id) }}">#{{ s.id }}</a></td>
+      <td class="mono">{{ s.target_path }}</td>
+      <td>{{ s.status }}</td>
+      <td>{{ s.files_scanned }}</td>
+      <td>{{ s.dirs_scanned }}</td>
+      <td>{{ s.errors_count }}</td>
+      <td>{{ s.started_at }}</td>
+      <td>{{ s.finished_at or "—" }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8">No scans logged yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

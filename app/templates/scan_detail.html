@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Scan #{{ scan.id }} — Windows Recycle Bin Analyzer{% endblock %}
+{% block content %}
+<h1>Scan #{{ scan.id }}</h1>
+<div class="card">
+  <p><strong>Target:</strong> <span class="mono">{{ scan.target_path }}</span></p>
+  <p><strong>Status:</strong> {{ scan.status }} &middot; <strong>Files:</strong> {{ scan.files_scanned }} &middot; <strong>Dirs:</strong> {{ scan.dirs_scanned }} &middot; <strong>Errors:</strong> {{ scan.errors_count }}</p>
+  <p><strong>Started:</strong> {{ scan.started_at }} &middot; <strong>Finished:</strong> {{ scan.finished_at or "—" }}</p>
+</div>
+<div class="card">
+  <h2>Findings ({{ scan.findings|length }})</h2>
+  <table>
+    <tr><th>Rule</th><th>Severity</th><th>$I File Path</th><th>Original File / Size</th></tr>
+    {% for f in scan.findings %}
+    <tr>
+      <td>{{ f.rule_id }} — {{ f.rule_name }}</td>
+      <td><span class="badge badge-{{ f.severity }}">{{ f.severity }}</span></td>
+      <td class="mono">{{ f.file_path }}</td>
+      <td class="mono">{{ f.permissions_octal }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No findings on this scan — clean result.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

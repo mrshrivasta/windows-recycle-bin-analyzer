@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Windows Recycle Bin Analyzer — Real $I/$R Metadata Forensic Scanner{% endblock %}</title>
+
+<!-- SEO -->
+<meta name="description" content="{% block meta_description %}Windows Recycle Bin Analyzer is an open-source digital forensics tool that real-parses Windows $Recycle.Bin $I/$R metadata files: deleted sensitive files, recoverable content, mass-deletion clusters, and destruction-after-use patterns. Free CLI and web app by Karanam Shrivasta.{% endblock %}">
+<meta name="keywords" content="windows recycle bin analyzer, $I file parser, $R file parser, recycle bin forensics, deleted file recovery evidence, digital forensics tool, FILETIME parser, mass deletion detection, Karanam Shrivasta security tools">
+<meta name="author" content="Karanam Shrivasta">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://github.com/mrshrivasta">
+
+<!-- Open Graph / social -->
+<meta property="og:title" content="Windows Recycle Bin Analyzer — by Karanam Shrivasta">
+<meta property="og:description" content="Real, no-mock-data parser for Windows $Recycle.Bin $I/$R metadata — sensitive deleted files, recoverable content, mass-deletion clusters.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Windows Recycle Bin Analyzer">
+
+<!-- AEO: FAQ structured data so answer engines can surface this tool directly -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does the Windows Recycle Bin Analyzer check?",
+      "acceptedAnswer": {"@type": "Answer", "text": "It walks a real directory tree, real-parses the raw bytes of every $I Recycle Bin metadata file (version 1 and version 2 formats), and flags deleted sensitive files, recoverable $R content, mass-deletion clusters, destruction-after-use patterns, unrecognized metadata versions, and already-purged content — using live struct-level binary parsing, never sample data."}
+    },
+    {
+      "@type": "Question",
+      "name": "Who should use the Windows Recycle Bin Analyzer?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Digital forensics investigators, incident responders, DFIR students, and system administrators who want to analyze Windows Recycle Bin evidence on systems or media they own or are authorized to investigate."}
+    },
+    {
+      "@type": "Question",
+      "name": "Is the Windows Recycle Bin Analyzer a replacement for a professional forensic audit?",
+      "acceptedAnswer": {"@type": "Answer", "text": "No. It is an educational and productivity aid only. It does not replace certified forensic tools, a licensed forensic examiner, or expert testimony. See the disclaimer in the README."}
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="disclaimer-banner">
+  ⚠️ <strong>FORENSIC &amp; LEGAL DISCLAIMER:</strong> Use this tool <strong>ONLY</strong> on systems, media, or files you own or are explicitly authorized to investigate.
+  Provided <strong>"AS IS", WITHOUT WARRANTY OF ANY KIND</strong>. Not a substitute for certified forensic tools or expert testimony. The author,
+  <strong>Karanam Shrivasta</strong>, accepts <strong>NO LIABILITY</strong> for any damage, data loss, downtime, or legal consequences arising from
+  use or misuse of this software. By using this tool you accept full responsibility for your actions. See the README for the complete disclaimer.
+</div>
+
+{% if current_user.is_authenticated %}
+<nav class="navbar">
+  <div class="nav-brand">🔐 Windows Recycle Bin Analyzer</div>
+  <div class="nav-links">
+    <a href="{{ url_for('dashboard.index') }}">Dashboard</a>
+    <a href="{{ url_for('logs.index') }}">Logs</a>
+    <a href="{{ url_for('alerts.index') }}">Alerts</a>
+    <a href="{{ url_for('incidents.index') }}">Incidents</a>
+    <a href="{{ url_for('analytics.index') }}">Analytics</a>
+    <a href="{{ url_for('reports.index') }}">Reports</a>
+    <a href="{{ url_for('settings.index') }}">Settings</a>
+    <a href="{{ url_for('auth.logout') }}">Logout ({{ current_user.username }})</a>
+  </div>
+</nav>
+{% endif %}
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="watermark-footer">
+  <p>
+    Windows Recycle Bin Analyzer &copy; {{ 2026 }} — Developed by <strong>Karanam Shrivasta</strong>
+    &middot; <a href="{{ github_url }}" target="_blank" rel="noopener">GitHub</a>
+    &middot; <a href="{{ linkedin_url }}" target="_blank" rel="noopener">LinkedIn</a>
+  </p>
+  <p class="footer-disclaimer">For authorized digital forensics and educational use only. No warranty. Use at your own risk.</p>
+</footer>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>
